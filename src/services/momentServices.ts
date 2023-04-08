@@ -1,11 +1,11 @@
-import {Request, Response} from 'express';
-
 import momentsRepository from "../repositories/momentRepository/momentsRepository.js";
 import conflictError from '../errors/conflictError.js';
+import { Moment } from '../protocols.js';
 
-async function insertNewMoment(req: Request, res: Response) {
-   const userName = await momentsRepository.getMomentByName();
-   if(userName) throw conflictError
+async function insertMomentService(moment: Moment) {
+  const userName = await momentsRepository.getMomentByTitle(moment.title);
+  if(userName) throw conflictError("A moment with this title already exists")
+  momentsRepository.create(moment)
 }
 
 async function getAllMoments() {
@@ -25,7 +25,7 @@ async function deleteMoment() {
 }
 
 export default {
-  insertNewMoment,
+  insertMomentService,
   getAllMoments,
   getMomentById,
   updateMoment,
