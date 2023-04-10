@@ -6,11 +6,9 @@ type AppError = {
 type Moment = {
   title: string;
   century: number;
-  locations?: string;
+  location: string;// mudar no banco nome e not null
   description: string;
-  tumbnail: string;
-  tags?: string[];
-  pictures: string[];
+  thumbnail_url: string;// mudar no banco nome
   author: string;
 }
 

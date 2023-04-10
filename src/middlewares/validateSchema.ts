@@ -1,21 +1,21 @@
-import { NextFunction, Request, Response } from "express"
-import { Moment } from "../protocols.js"
+import { NextFunction, Request, Response } from "express";
+import { ObjectSchema } from 'joi'
+import { invalidInputError } from "../errors/invalidInputError.js";
 
-async function validateSchema(schema) {
-   return async (res:Response, req:Request, next:NextFunction)=>{
-      const body = req.body
+export function validateBody(schema) {
+   
+   return (req:Request, res:Response, next:NextFunction) => {
+   
+      const {error} = schema.validate(req.body, {abortEarly: false})
 
-      const {error, value} = await schema
-      .validate(body, {abortEarly: false})
+      if(!error) {
+         next()
+      } else {
+         const errorList = error.details.map(detail => detail.message )
+         throw invalidInputError(errorList)
+      }   
 
-      if(error) return res.send(error.details.map(error => error.message))
-
-      res.locals.data = value
-      
-      next()
    }
 }
 
-export default {
-  validateSchema
-}
+
